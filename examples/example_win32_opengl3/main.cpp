@@ -2,7 +2,7 @@
 // If you are new to Dear ImGui, read documentation from the docs/ folder + read the top of imgui.cpp.
 // Read online: https://github.com/ocornut/imgui/tree/master/docs
 
-// This is provided for completeness, however it is strogly recommended you use OpenGL with SDL or GLFW.
+// This is provided for completeness, however it is strongly recommended you use OpenGL with SDL or GLFW.
 
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
@@ -35,6 +35,7 @@ int main(int, char**)
     // Create application window
     //ImGui_ImplWin32_EnableDpiAwareness();
     WNDCLASSEXW wc = { sizeof(wc), CS_OWNDC, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, L"ImGui Example", NULL };
+    // :: with no class name before it means GLOBAL Function/Variable.
     ::RegisterClassExW(&wc);
     HWND hwnd = ::CreateWindowW(wc.lpszClassName, L"Dear ImGui Win32+OpenGL3 Example", WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, NULL, NULL, wc.hInstance, NULL);
 
