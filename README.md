@@ -4,6 +4,7 @@
 ```cpp
   /examples/example_win32_opengl3/main.cpp
   /misc/fonts
+  /demo
 ```
 
 ## Functions Supported
@@ -27,4 +28,6 @@
 - Chinese Font is currently included in _/misc/fonts_, but **can not** display chinese as expected. All chinese characters' output is '?'. I have attached "u8" before every chinese character.
 
 ## Demo
+_demo.gif and demo.mp4 are in demo/ folder._
+
 ![](demo/demo.gif)
