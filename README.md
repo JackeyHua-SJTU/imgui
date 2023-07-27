@@ -25,3 +25,6 @@
 
 ## TODO
 - Chinese Font is currently included in _/misc/fonts_, but **can not** display chinese as expected. All chinese characters' output is '?'. I have attached "u8" before every chinese character.
+
+## Demo
+![](demo/demo.gif)
