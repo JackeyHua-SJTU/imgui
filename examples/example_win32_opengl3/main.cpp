@@ -84,9 +84,16 @@ int main(int, char**)
     //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
     //IM_ASSERT(font != NULL);
 
+    // Load Fonts
+    // backslash '\\' need double \ 
+    //ImFont* font1 = io.Fonts->AddFontFromFileTTF("C:\\Users\\ths\\Desktop\\imgui-master\\misc\\fonts\\Roboto-Medium.ttf", 18.0f);
+    ImFont* font2 = io.Fonts->AddFontFromFileTTF("C:\\Users\\ths\\Desktop\\imgui-master\\misc\\fonts\\pingfang.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesChineseFull());
+    
+
     // Our state
     bool show_demo_window = true;
     bool show_another_window = false;
+    // background color parameter
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     // Main loop
@@ -117,24 +124,131 @@ int main(int, char**)
 
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
         {
+            ImGuiStyle& Style = ImGui::GetStyle();
+            auto color = Style.Colors;
+
             static float f = 0.0f;
             static int counter = 0;
+            static int Color = 1;
+            static char str1[128] = "";
+            static char str2[128] = "";
+            static bool animate = true;
+            static float progress = 0.0f, progress_dir = 1.0f;
+            static int cnt = 0;
+            static int language = 1;
 
-            ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+            enum Color { red, blue };
+            enum Language {Chinese, English};
+            switch (Color) {
+            case Color::blue:
+                Style.ChildRounding = 8.0f;
+                Style.FrameRounding = 5.0f;
 
-            ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
+                color[ImGuiCol_Button] = ImColor(51, 120, 255, 255);
+                color[ImGuiCol_ButtonHovered] = ImColor(71, 140, 255, 255);
+                color[ImGuiCol_ButtonActive] = ImColor(31, 100, 225, 255);
+
+                color[ImGuiCol_FrameBg] = ImColor(54, 54, 54, 150);
+                color[ImGuiCol_FrameBgActive] = ImColor(42, 42, 42, 150);
+                color[ImGuiCol_FrameBgHovered] = ImColor(100, 100, 100, 150);
+
+                color[ImGuiCol_CheckMark] = ImColor(51, 120, 255, 255);
+
+                color[ImGuiCol_SliderGrab] = ImColor(51, 120, 255, 255);
+                color[ImGuiCol_SliderGrabActive] = ImColor(31, 100, 225, 255);
+
+                color[ImGuiCol_Header] = ImColor(51, 120, 255, 255);
+                color[ImGuiCol_HeaderHovered] = ImColor(71, 140, 255, 255);
+                color[ImGuiCol_HeaderActive] = ImColor(31, 100, 225, 255);
+                break;
+
+            case Color::red:
+                Style.ChildRounding = 8.0f;
+                Style.FrameRounding = 5.0f;
+
+                color[ImGuiCol_Button] = ImColor(192, 51, 74, 255);
+                color[ImGuiCol_ButtonHovered] = ImColor(212, 71, 94, 255);
+                color[ImGuiCol_ButtonActive] = ImColor(172, 31, 54, 255);
+
+                color[ImGuiCol_FrameBg] = ImColor(54, 54, 54, 150);
+                color[ImGuiCol_FrameBgActive] = ImColor(42, 42, 42, 150);
+                color[ImGuiCol_FrameBgHovered] = ImColor(100, 100, 100, 150);
+
+                color[ImGuiCol_CheckMark] = ImColor(192, 51, 74, 255);
+
+                color[ImGuiCol_SliderGrab] = ImColor(192, 51, 74, 255);
+                color[ImGuiCol_SliderGrabActive] = ImColor(172, 31, 54, 255);
+
+                color[ImGuiCol_Header] = ImColor(192, 51, 74, 255);
+                color[ImGuiCol_HeaderHovered] = ImColor(212, 71, 94, 255);
+                color[ImGuiCol_HeaderActive] = ImColor(172, 31, 54, 255);
+                break;
+            }
+            switch (language) {
+                case Language::Chinese:
+                    break;
+
+                case Language::English:
+                    break;
+            }
+
+            ImGui::Begin("Login & Loader Demo");                          // Create a window called "Hello, world!" and append into it.
+            //ImGui::PushFont(font2);
+            ImGui::Text(u8"A loading UI supporting dynamic language change.");               // Display some text (you can use a format strings too)
+            //ImGui::PopFont();
             ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
             ImGui::Checkbox("Another Window", &show_another_window);
 
             ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
             ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 
-            if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-                counter++;
-            ImGui::SameLine();
-            ImGui::Text("counter = %d", counter);
+            // if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+            //      counter++;
+            // ImGui::SameLine();
+            // ImGui::Text("counter = %d", counter);
 
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+            // ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+
+            // // ImGui::SetCursorPos({ 430.0f,330.0f });
+            // ImGui::Text(u8"color");
+            // ImGui::SameLine();
+            // // ImGui::SetCursorPos({ 505.0f,328.0f });
+            // ImGui::SetNextItemWidth(80.0f);
+            ImGui::Combo(u8"Change color here!", &Color, u8"red\0blue\0", 3);
+            // Multiple same widget inside a window needs tag to differ.
+            // Simply add tag after '##' as below.
+            ImGui::Text(u8"Account");
+            ImGui::InputTextWithHint(u8"##account", u8"Your account id here!", str1, 128);
+
+            ImGui::Text(u8"Key");
+            ImGui::InputTextWithHint(u8"##key", "Your password here!", str2, IM_ARRAYSIZE(str2), ImGuiInputTextFlags_Password);
+
+            if (ImGui::Button("LogIn")) cnt++;
+            ImGui::SameLine();
+            if (animate && cnt > 0) {
+                progress += progress_dir * 0.2f * ImGui::GetIO().DeltaTime;
+                if (progress >= +1.1f) { animate = false; }
+                if (progress <= -0.1f) { progress = -0.1f; progress_dir *= -1.0f; }
+            }
+            if (cnt) ImGui::ProgressBar(progress, ImVec2(0.0f, 0.0f));
+            // ImGui::SetWindowPos(ImVec2(100, 100), ImGuiCond_Always);
+            if (cnt) ImGui::Text("Current State : ");
+            ImGui::SameLine();
+            if (cnt > 0) {
+                if (progress < 0.3f) {
+                    ImGui::TextColored(ImVec4(1.0f, 0.16f, 0.0f, 0.5f), "Linking to the server.");
+                }
+                else if (progress < 0.6f) {
+                    ImGui::TextColored(ImVec4(1.0f,0.5f, 0.0f, 1.0f), "Verifying account.");
+                }
+                else if (progress < 0.85f) {
+                    ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 0.5f), "Account pass.");
+                }
+                else {
+                    ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 0.5f), "Loading.");
+                }
+            }
+            
             ImGui::End();
         }
 
@@ -233,3 +347,9 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     }
     return ::DefWindowProcW(hWnd, msg, wParam, lParam);
 }
+
+
+// dark color
+// R:42 G:14 B:47 A:255
+// shallow color
+// R:66 G:150 B:250 A:179
