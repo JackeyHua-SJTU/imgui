@@ -86,8 +86,8 @@ int main(int, char**)
 
     // Load Fonts
     // backslash '\\' need double \ 
-    //ImFont* font1 = io.Fonts->AddFontFromFileTTF("C:\\Users\\ths\\Desktop\\imgui-master\\misc\\fonts\\Roboto-Medium.ttf", 18.0f);
-    ImFont* font2 = io.Fonts->AddFontFromFileTTF("C:\\Users\\ths\\Desktop\\imgui-master\\misc\\fonts\\pingfang.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesChineseFull());
+    ImFont* font1 = io.Fonts->AddFontFromFileTTF("C:\\Users\\ths\\Desktop\\imgui-master\\misc\\fonts\\Roboto-Medium.ttf", 18.0f);
+    ImFont* font2 = io.Fonts->AddFontFromFileTTF("C:\\Users\\ths\\Desktop\\imgui-master\\misc\\fonts\\SourceHanSansSC.otf", 18.0f, NULL, io.Fonts->GetGlyphRangesChineseFull());
     
 
     // Our state
@@ -97,6 +97,10 @@ int main(int, char**)
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     // Main loop
+    // TODO: 
+    //      1. Language switch. --> Font Switch.(Chinese is always output ?, pretty strange.) finished
+    //      2. Center every component.
+    //      3. Color & Background switch. # BackgroundColor in Tables & Columns
     bool done = false;
     while (!done)
     {
@@ -135,10 +139,11 @@ int main(int, char**)
             static bool animate = true;
             static float progress = 0.0f, progress_dir = 1.0f;
             static int cnt = 0;
-            static int language = 1;
+            static int font = 0;
+            static bool change = false;
 
             enum Color { red, blue };
-            enum Language {Chinese, English};
+            enum Font { RobotoMedium, SourceHanSansSC };
             switch (Color) {
             case Color::blue:
                 Style.ChildRounding = 8.0f;
@@ -184,17 +189,23 @@ int main(int, char**)
                 color[ImGuiCol_HeaderActive] = ImColor(172, 31, 54, 255);
                 break;
             }
-            switch (language) {
-                case Language::Chinese:
+            switch (font) {
+                case Font::RobotoMedium:
+                    if (change) {
+                        change = false;
+                        //ImGui::PopFont();
+                    }
                     break;
 
-                case Language::English:
+                case Font::SourceHanSansSC:
+                    change = true;
+                    ImGui::PushFont(font2);
                     break;
             }
 
             ImGui::Begin("Login & Loader Demo");                          // Create a window called "Hello, world!" and append into it.
             //ImGui::PushFont(font2);
-            ImGui::Text(u8"A loading UI supporting dynamic language change.");               // Display some text (you can use a format strings too)
+            ImGui::Text("A loading UI supporting dynamic language change.");               // Display some text (you can use a format strings too)
             //ImGui::PopFont();
             ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
             ImGui::Checkbox("Another Window", &show_another_window);
@@ -214,28 +225,45 @@ int main(int, char**)
             // ImGui::SameLine();
             // // ImGui::SetCursorPos({ 505.0f,328.0f });
             // ImGui::SetNextItemWidth(80.0f);
-            ImGui::Combo(u8"Change color here!", &Color, u8"red\0blue\0", 3);
+            ImGui::Combo("Change color here!", &Color, "red\0blue\0", 3);
+            ImGui::Combo("Change fonts here!", &font, "RobotoMedium\0SourceHanSansSC\0", 3);
             // Multiple same widget inside a window needs tag to differ.
             // Simply add tag after '##' as below.
-            ImGui::Text(u8"Account");
+            ImGui::Text("Account");
+            // ImGui::DebugTextEncoding((const char *)u8"你好");
+            // ImGui::Text(u8"中文 ");
             ImGui::InputTextWithHint(u8"##account", u8"Your account id here!", str1, 128);
 
             ImGui::Text(u8"Key");
             ImGui::InputTextWithHint(u8"##key", "Your password here!", str2, IM_ARRAYSIZE(str2), ImGuiInputTextFlags_Password);
 
-            if (ImGui::Button("LogIn")) cnt++;
+            if (ImGui::Button("LogIn") && strlen(str1) && strlen(str2)) cnt++;
             ImGui::SameLine();
             if (animate && cnt > 0) {
                 progress += progress_dir * 0.2f * ImGui::GetIO().DeltaTime;
                 if (progress >= +1.1f) { animate = false; }
                 if (progress <= -0.1f) { progress = -0.1f; progress_dir *= -1.0f; }
             }
-            if (cnt) ImGui::ProgressBar(progress, ImVec2(0.0f, 0.0f));
+            if (cnt && strlen(str1) && strlen(str2)) ImGui::ProgressBar(progress, ImVec2(0.0f, 0.0f));
             // ImGui::SetWindowPos(ImVec2(100, 100), ImGuiCond_Always);
             if (cnt) ImGui::Text("Current State : ");
             ImGui::SameLine();
+            if (cnt == 0) {
+                if (strlen(str1) == 0) {
+                    ImGui::TextColored(ImVec4(1.0f, 0.16f, 0.0f, 0.5f), "Account is empty.");
+                }
+                else if (strlen(str2) == 0) {
+                    ImGui::TextColored(ImVec4(1.0f, 0.16f, 0.0f, 0.5f), "Password is empty.");
+                }
+            }
             if (cnt > 0) {
-                if (progress < 0.3f) {
+                if (strlen(str1) == 0) {
+                    ImGui::TextColored(ImVec4(1.0f, 0.16f, 0.0f, 0.5f), "Account is empty.");
+                }
+                else if (strlen(str2) == 0) {
+                    ImGui::TextColored(ImVec4(1.0f, 0.16f, 0.0f, 0.5f), "Password is empty.");
+                }
+                else if (progress < 0.3f) {
                     ImGui::TextColored(ImVec4(1.0f, 0.16f, 0.0f, 0.5f), "Linking to the server.");
                 }
                 else if (progress < 0.6f) {
@@ -244,11 +272,14 @@ int main(int, char**)
                 else if (progress < 0.85f) {
                     ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 0.5f), "Account pass.");
                 }
-                else {
+                else if (progress < 0.99f) {
                     ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 0.5f), "Loading.");
                 }
+                else {
+                    ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 0.5f), "Success.");
+                }
             }
-            
+            if (change) ImGui::PopFont();
             ImGui::End();
         }
 
