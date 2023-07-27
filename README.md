@@ -9,5 +9,5 @@
 ## Functions Supported
 - Dynamically change colors between _red and blue_.
 - Dynamically change fonts between _Roboto-Medium and SourceHanSansSC_.
-- Account and Password Input. No reaction if any of the two is not provided.
+- Account and Password Input. _No reaction_ if any of the two is not provided.
 - Progress bar and Current state text output.
