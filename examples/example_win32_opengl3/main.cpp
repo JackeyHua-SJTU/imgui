@@ -98,9 +98,10 @@ int main(int, char**)
 
     // Main loop
     // TODO: 
-    //      1. Language switch. --> Font Switch.(Chinese is always output ?, pretty strange.) finished
+    //      1. Language switch. --> Font Switch.(Chinese is always output ?, pretty strange.) Finished.
     //      2. Center every component.
-    //      3. Color & Background switch. # BackgroundColor in Tables & Columns
+    //      3. Color & Background switch. # BackgroundColor in Tables & Columns Finished.
+    //      4. Sub Window for Tips. Finished.
     bool done = false;
     while (!done)
     {
@@ -123,8 +124,8 @@ int main(int, char**)
         ImGui::NewFrame();
 
         // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-        if (show_demo_window)
-            ImGui::ShowDemoWindow(&show_demo_window);
+        // if (show_demo_window)
+        //    ImGui::ShowDemoWindow(&show_demo_window);
 
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
         {
@@ -149,6 +150,7 @@ int main(int, char**)
                 Style.ChildRounding = 8.0f;
                 Style.FrameRounding = 5.0f;
 
+                color[ImGuiCol_WindowBg] = ImColor(1,7,75,150);
                 color[ImGuiCol_Button] = ImColor(51, 120, 255, 255);
                 color[ImGuiCol_ButtonHovered] = ImColor(71, 140, 255, 255);
                 color[ImGuiCol_ButtonActive] = ImColor(31, 100, 225, 255);
@@ -171,6 +173,7 @@ int main(int, char**)
                 Style.ChildRounding = 8.0f;
                 Style.FrameRounding = 5.0f;
 
+                color[ImGuiCol_WindowBg] = ImColor(94, 2, 38, 150);
                 color[ImGuiCol_Button] = ImColor(192, 51, 74, 255);
                 color[ImGuiCol_ButtonHovered] = ImColor(212, 71, 94, 255);
                 color[ImGuiCol_ButtonActive] = ImColor(172, 31, 54, 255);
@@ -205,13 +208,13 @@ int main(int, char**)
 
             ImGui::Begin("Login & Loader Demo");                          // Create a window called "Hello, world!" and append into it.
             //ImGui::PushFont(font2);
-            ImGui::Text("A loading UI supporting dynamic language change.");               // Display some text (you can use a format strings too)
+            ImGui::Text("A login & loading UI supporting dynamic color and font change.");               // Display some text (you can use a format strings too)
             //ImGui::PopFont();
-            ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-            ImGui::Checkbox("Another Window", &show_another_window);
+            // ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
+            ImGui::Checkbox("Tips here, click for more.", &show_another_window);
 
-            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-            ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+            // ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+            // ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 
             // if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
             //      counter++;
@@ -286,8 +289,12 @@ int main(int, char**)
         // 3. Show another simple window.
         if (show_another_window)
         {
-            ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-            ImGui::Text("Hello from another window!");
+            ImGui::Begin("Tips for how to use this GUI", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+            ImGui::Text("Welcome to tips.");
+            ImGui::Text("1. You can change color between red and blue. Check the color combo.");
+            ImGui::Text("2. You can change fonts between Roboto-Medium and SourceHanSansSC. Check the font combo.");
+            ImGui::Text("3. Type in your account and password before pressing the Login, or nothing will happen.");
+            ImGui::Text("4. You can check your current login state at the state output.");
             if (ImGui::Button("Close Me"))
                 show_another_window = false;
             ImGui::End();
